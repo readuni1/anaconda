@@ -1,13 +1,27 @@
-# Adds packages to an existing Conda env
-# Need to add Version parameter
-
-# Note: This can be very slow - it downloads packages from the Repo
-
+# @summary Adds packages to an existing Conda env
+#
+# @note Need to add Version parameter.
+#       This can be very slow - it downloads packages from the Repo
+#
+# @param env
+#   The environment to install the package.
+#
+# @param language
+#   The language to use to install the package.
+#
+# @param base_path
+#   The base path to anaconda.
+#
+# @param timeout
+#   The puppet exec resource timeout parameter.
+#   @see https://puppet.com/docs/puppet/latest/types/exec.html#exec-attribute-timeout
+#
 define anaconda::package(
-  $env       = undef,
-  $language  = 'python',
-  $base_path = lookup('anaconda::base_path'),
-) {
+  String  $env       = undef,
+  String  $language  = 'python',
+  String  $base_path = '/opt/anaconda',
+  Integer $timeout   = 0,
+){
   include anaconda
 
   $conda = "${base_path}/bin/conda"
@@ -31,8 +45,8 @@ define anaconda::package(
   }
 
   exec { "anaconda_${env_name}_${name}":
-      command =>
-      "${conda} install --yes --quiet ${env_option} ${options} ${name}",
+      command => "${conda} install --yes --quiet ${env_option} ${options} ${name}",
+      timeout => $timeout,
       require => $env_require,
 
       # Ugly way to check if package is already installed

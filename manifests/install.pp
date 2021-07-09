@@ -1,4 +1,5 @@
-# Manages the installation of anaconda.
+# @summary Manages the installation of anaconda.
+#
 class anaconda::install {
 
   include anaconda::params
@@ -8,6 +9,7 @@ class anaconda::install {
   exec { 'install_anaconda':
     command => "bash /tmp/${anaconda::params::installer} -b -p ${anaconda::params::base_path}",
     creates => $anaconda::params::base_path,
+    timeout => 0,
     require => Exec['download_anaconda'],
   }
 
@@ -19,11 +21,19 @@ class anaconda::install {
     command => "wget -P /tmp ${anaconda::params::url}",
     creates => "/tmp/${anaconda::params::installer}",
     onlyif  => "test ! -d ${anaconda::params::base_path}",
+    timeout => 0,
   }
 
   file { "${anaconda::params::base_path}/.condarc":
     ensure  => present,
     source  => 'puppet:///modules/anaconda/.condarc',
     require => Exec['install_anaconda'],
+  }
+
+  exec{ 'install_conda_build':
+    command => '/opt/anaconda/bin/conda install conda-build',
+    creates => '/opt/anaconda/bind/conda-build',
+    timeout => 0,
+    require => File[ '/opt/anaconda/.condarc'],
   }
 }
