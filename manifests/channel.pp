@@ -19,7 +19,7 @@ define anaconda::channel(
 
   include anaconda
 
-  $conda = "${base_path}/bin/conda"
+  $conda = "${anaconda::base_path}/bin/conda"
 
   exec { "anaconda_channel_${name}":
     command => "${conda} config --add channels ${channel}",

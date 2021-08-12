@@ -4,16 +4,16 @@
 
 define anaconda::env(
   Optional[String] $language         = undef,
-  String           $version          = lookup('anaconda::python_version'),
-  String           $anaconda_version = lookup('anaconda::anaconda_version'),
-  String           $base_path        = lookup('anaconda::base_path'),
+  String           $version          = $anaconda::python_version,
+  String           $anaconda_version = $anaconda::anaconda_version,
+  String           $base_path        = $anaconda::base_path,
   String           $exec_timeout     = '300'
 ) {
 
   anchor{"anaconda::env::${title}::begin":}
   include anaconda
 
-  $conda = "${base_path}/bin/conda"
+  $conda = "${anaconda::base_path}/bin/conda"
 
     case $language {
       'r', 'R'           : { $options = '-c r' }

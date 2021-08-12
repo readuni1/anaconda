@@ -6,11 +6,11 @@
 define anaconda::package(
   $env       = undef,
   $language  = 'python',
-  $base_path = lookup('anaconda::base_path'),
+  $base_path = $anaconda::base_path,
 ) {
   include anaconda
 
-  $conda = "${base_path}/bin/conda"
+  $conda = "${anaconda::base_path}/bin/conda"
 
   case $language {
     'r', 'R'           : { $options = '-c r' }
