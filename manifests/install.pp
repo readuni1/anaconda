@@ -16,7 +16,7 @@ class anaconda::install {
   # Avoid circular dependency on "install_anaconda", run if /opt/anaconda
   # doesn't exist
   exec { 'download_anaconda':
-    command => "wget -P /tmp ${anaconda::url}/${anaconda::installer}",
+    command => "wget -P /tmp ${anaconda::base_url}/${anaconda::installer}",
     creates => "/tmp/${anaconda::installer}",
     onlyif  => "test ! -d ${anaconda::base_path}",
   }
