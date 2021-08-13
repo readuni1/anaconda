@@ -15,5 +15,8 @@ class anaconda (
       ensure  => 'installed',
     }
   )
+  anaconda::package { 'anaconda':
+    version => anaconda::anaconda_version,
+  }
 
 }

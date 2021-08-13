@@ -21,11 +21,6 @@ class anaconda::install {
     onlyif  => "test ! -d ${anaconda::base_path}",
   }
 
-  anaconda::package { 'anaconda':
-    version => anaconda::anaconda_version,
-    require => Exec['install_anaconda'],
-  }
-
   file { "${anaconda::base_path}/.condarc":
     ensure  => present,
     source  => 'puppet:///modules/anaconda/.condarc',
