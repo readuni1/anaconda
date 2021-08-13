@@ -7,6 +7,7 @@ define anaconda::package(
   $env       = undef,
   $language  = 'python',
   $base_path = $anaconda::base_path,
+  $version   = undef,
 ) {
   include anaconda
 
@@ -30,6 +31,12 @@ define anaconda::package(
       $env_require = [Class['anaconda::install']]
   }
 
+  if $version {
+    $vchkcmd = "| grep -q '${version}'"
+  } else {
+    $vchkcmd = ''
+  }
+
   exec { "anaconda_${env_name}_${name}":
       command =>
       "${conda} install --yes --quiet ${env_option} ${options} ${name}",
@@ -37,6 +44,6 @@ define anaconda::package(
 
       # Ugly way to check if package is already installed
       # bug: conda list returns 0 no matter what so we grep output
-      unless  => "${conda} list ${env_option} ${name} | grep -q -w -i '${name}'",
+      unless  => "${conda} list ${env_option} ${name} | grep -q -w -i '${name}' ${vckgcmd}",
   }
 }
