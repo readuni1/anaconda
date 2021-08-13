@@ -44,6 +44,6 @@ define anaconda::package(
 
       # Ugly way to check if package is already installed
       # bug: conda list returns 0 no matter what so we grep output
-      unless  => "${conda} list ${env_option} ${name} | grep -q -w -i '${name}' ${vckgcmd}",
+      unless  => "${conda} list ${env_option} ${name} | grep -q -w -i '${name}' ${vchkcmd}",
   }
 }
