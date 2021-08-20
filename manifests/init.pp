@@ -1,22 +1,40 @@
 # Manages the installation of anaconda.
 class anaconda (
-  String $python_version,
-  String $anaconda_version,
-  String $installer,
-  String $base_path,
-  String $base_url,
-  Array  $depend_pkgs,
+  Variant[String,Float] $default_anaconda_version,
+  Variant[String,Float] $default_env_python_version,
+  String                $base_path,
+  String                $base_url,
+  Array                 $depend_pkgs,
+  String                $default_env_language = 'python',
+  Hash                  $configs              = {},
+  Hash                  $default_envs         = {},
+  Integer               $exec_timeout         = 300,
 ) {
 #  include anaconda::params
   Exec { path => "${anaconda::base_path}/bin:/usr/bin:/usr/sbin/:/bin:/sbin" }
-  include anaconda::install
   ensure_packages ( $depend_pkgs,
     {
       ensure  => 'installed',
     }
   )
-  anaconda::package { 'anaconda':
-    version => anaconda::anaconda_version,
+  file { $base_path:
+    ensure => 'directory'
   }
-
+#  unless $default_config['python_version'] {
+#    $default_config['python_version'] = $default_python_version
+#  }
+  $configs.each |String $anaconda_version, Hash $config| {
+    anaconda::install { "anaconda3_${anaconda_version}":
+      ensure => $config['ensure'],
+      anaconda_version => $anaconda_version,
+      config  => $config,
+      require => File[$base_path],
+    }
+  }
+  unless $configs[$default_anaconda_version] {
+    anaconda::install { "anaconda3_${default_anaconda_version}":
+      anaconda_version => $default_anaconda_version,
+      require => File[$base_path],
+    }
+  }
 }

@@ -1,7 +1,7 @@
 ---
-anaconda::base_url: 'http://repo.continuum.io/archive'
-anaconda::base_path: '/opt/anaconda'
-anaconda::anaconda_version: '5.2.0'
-anaconda::install_version: '5.2.0'
-anaconda::python_version: '3.6'
-anaconda::installer: 'Anaconda3-5.2.0-Linux-x86_64.sh'
+anaconda::default_anaconda_version: '2021.05'
+anaconda::default_env_python_version: 3.8
+anaconda::base_path: "/opt/anaconda3"
+anaconda::base_url: https://repo.anaconda.com/archive
+anaconda::configs: {}
+anaconda::default_envs: {}

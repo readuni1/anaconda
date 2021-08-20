@@ -1,29 +1,48 @@
 # Manages the installation of anaconda.
-class anaconda::install {
+define anaconda::install (
+  String $ensure = 'installed',
+  String $anaconda_version,
+  Hash   $config = {},
+) {
 
 #  include anaconda::params
-
-  # Bug fix: the require will force a download even if it
-  # doesn't have to be installed
-  exec { 'install_anaconda':
-    command => "bash /tmp/${anaconda::installer} -b -p ${anaconda::base_path}",
-    creates => $anaconda::base_path,
-    require => Exec['download_anaconda'],
+  $path = "${anaconda::base_path}/${anaconda_version}"
+  if ( $ensure == 'absent' ) {
+    exec { "remove_anaconda_${anaconda_version}":
+      command => "rm -rf ${path}",
+      onlyif  => "test -d ${path}",
+    }
+    exec { "remove_anaconda_download_${anaconda_version}":
+      command => "rm ${installer}",
+      onlyif  => "test -e ${installer}",
+    }
+  } else {
+    $installer="Anaconda3-${anaconda_version}-Linux-x86_64.sh"
+    $envs_hash = $config['envs'] ? {
+      undef   => $anaconda::default_envs,
+      default => $anaconda::default_envs + $config['envs'],
+    }
+    anaconda::install_base { "anaconda3_${anaconda_version}":
+      ensure => $config['ensure'],
+      installer => $installer,
+      anaconda_version => $anaconda_version,
+      require => File[$anaconda::base_path],
+    }
+    $envs_hash.each |String $env_name, Hash $env_hash| {
+      $packages = $env_hash['packages'] ? {
+        Undef   => '',
+        Array   => join($env_hash['packages'],' '),
+        String  => $env_hash['packages'],
+        default => "${env_hash['packages']}",
+      }
+      anaconda::env { "anaconda3_${anaconda_version}_env_${env_name}":
+        anaconda_version => $anaconda_version,
+        env_name => $env_name,
+        language => $env_hash['language'],
+        python_version  => $env_hash['python_version'],
+        exec_timeout  => $env_hash['exec_timeout'],
+      }
+    }
   }
 
-  # Bug fix: the onlyif prevents the download from happening
-  # when it doesn't need to be installed
-  # Avoid circular dependency on "install_anaconda", run if /opt/anaconda
-  # doesn't exist
-  exec { 'download_anaconda':
-    command => "wget -P /tmp ${anaconda::base_url}/${anaconda::installer}",
-    creates => "/tmp/${anaconda::installer}",
-    onlyif  => "test ! -d ${anaconda::base_path}",
-  }
-
-  file { "${anaconda::base_path}/.condarc":
-    ensure  => present,
-    source  => 'puppet:///modules/anaconda/.condarc',
-    require => Exec['install_anaconda'],
-  }
 }
