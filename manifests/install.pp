@@ -37,10 +37,11 @@ define anaconda::install (
       }
       anaconda::env { "anaconda3_${anaconda_version}_env_${env_name}":
         anaconda_version => $anaconda_version,
-        env_name => $env_name,
-        language => $env_hash['language'],
-        python_version  => $env_hash['python_version'],
-        exec_timeout  => $env_hash['exec_timeout'],
+        env_name         => $env_name,
+        language         => $env_hash['language'],
+        python_version   => $env_hash['python_version'],
+        packages         => $packages,
+        exec_timeout     => $env_hash['exec_timeout'],
       }
     }
   }
