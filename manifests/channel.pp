@@ -37,7 +37,7 @@ define anaconda::channel(
 
   exec { "anaconda3_${anaconda_version}_channel_${channel}":
     command => "${conda} config --${_action} channels ${channel}",
-    require => Anchor["anaconda::{anaconda_version}::channel::${title}::begin"],
+    require => Anchor["anaconda::${anaconda_version}::channel::${title}::begin"],
     unless  => "${conda} config --show channels | grep -q -w -i ${channel}",
     timeout => $_exec_timeout,
   }
