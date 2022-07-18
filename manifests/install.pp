@@ -32,6 +32,15 @@ define anaconda::install (
       anaconda_version => $anaconda_version,
       require => File[$anaconda::base_path],
     }
+
+    $channels_hash.each |String $channel_name, Hash $channel_hash| {
+      anaconda::channel { "anaconda3_${anaconda_version}_env_${channel_name}":
+        anaconda_version => $anaconda_version,
+        channel          => $channel_hash['channel'],
+        action           => $channel_hash['action'],
+        exec_timeout     => $channel_hash['exec_timeout'],
+      }
+    }
     $envs_hash.each |String $env_name, Hash $env_hash| {
       $packages = $env_hash['packages'] ? {
         Undef   => '',
