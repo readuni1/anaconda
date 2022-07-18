@@ -14,7 +14,7 @@ define anaconda::channel(
   String $channel          = $title,
   String $anaconda_version = $anaconda::default_anaconda_version,
   String $base_path        = $anaconda::base_path,
-  Options[String]   $action,
+  Optional[String]  $action,
   Optional[Integer] $exec_timeout,
 ) {
 
