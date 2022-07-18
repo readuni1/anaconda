@@ -3,7 +3,7 @@
 
 
 define anaconda::env(
-  String            $env_name         = $tittle,
+  String            $env_name         = $title,
   Optional[String]  $language         = undef,
   Optional[String]  $python_version,
   String            $anaconda_version = $anaconda::default_anaconda_version,

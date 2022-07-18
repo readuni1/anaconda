@@ -22,6 +22,10 @@ define anaconda::install (
       undef   => $anaconda::default_envs,
       default => $anaconda::default_envs + $config['envs'],
     }
+    $channels_hash = $config['channels'] ? {
+      undef   => $anaconda::default_channels,
+      default => $anaconda::default_channels + $config['channels'],
+    }
     anaconda::install_base { "anaconda3_${anaconda_version}":
       ensure => $config['ensure'],
       installer => $installer,

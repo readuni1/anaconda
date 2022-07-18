@@ -8,6 +8,7 @@ class anaconda (
   String                $default_env_language = 'python',
   Hash                  $configs              = {},
   Hash                  $default_envs         = {},
+  Hash                  $default_channels     = {},
   Integer               $exec_timeout         = 300,
 ) {
 #  include anaconda::params
@@ -37,4 +38,7 @@ class anaconda (
       require => File[$base_path],
     }
   }
+
+  #make sure channels are configured before envs
+  Anaconda::Channel <| |> -> Anaconda::Env <| |>
 }
