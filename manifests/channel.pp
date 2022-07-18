@@ -14,7 +14,7 @@ define anaconda::channel(
   String $channel          = $title,
   String $anaconda_version = $anaconda::default_anaconda_version,
   String $base_path        = $anaconda::base_path,
-  String $action           = 'add',
+  Options[String]   $action,
   Optional[Integer] $exec_timeout,
 ) {
 
@@ -30,9 +30,13 @@ define anaconda::channel(
     undef  => $anaconda::exec_timeout,
     default=> $exec_timeout,
   }
+  $_action = $action ? {
+    undef  => 'add',
+    default=> $action,
+  }
 
   exec { "anaconda3_${anaconda_version}_channel_${channel}":
-    command => "${conda} config --${action} channels ${channel}",
+    command => "${conda} config --${_action} channels ${channel}",
     require => Anchor["anaconda::{anaconda_version}::channel::${title}::begin"],
     unless  => "${conda} config --show channels | grep -q -w -i ${channel}",
     timeout => $_exec_timeout,
