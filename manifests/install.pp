@@ -34,7 +34,7 @@ define anaconda::install (
     }
 
     $channels_hash.each |String $channel_name, Hash $channel_hash| {
-      anaconda::channel { "anaconda3_${anaconda_version}_env_${channel_name}":
+      anaconda::channel { "anaconda3_${anaconda_version}_channel_${channel_name}":
         anaconda_version => $anaconda_version,
         channel          => $channel_hash['channel'],
         action           => $channel_hash['action'],
