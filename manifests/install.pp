@@ -17,7 +17,7 @@ define anaconda::install (
       onlyif  => "test -e ${installer}",
     }
   } else {
-    $installer="Anaconda3-${anaconda_version}-Linux-x86_64.sh"
+    $installer=$::anaconda::installer
     $envs_hash = $config['envs'] ? {
       undef   => $anaconda::default_envs,
       default => $anaconda::default_envs + $config['envs'],
