@@ -4,6 +4,7 @@ class anaconda (
   Variant[String,Float] $default_env_python_version,
   String                $base_path,
   String                $base_url,
+  String                $installer,
   Array                 $depend_pkgs,
   String                $default_env_language = 'python',
   Hash                  $configs              = {},
