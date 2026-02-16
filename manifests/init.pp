@@ -14,7 +14,7 @@ class anaconda (
 ) {
 #  include anaconda::params
   Exec { path => "${anaconda::base_path}/bin:/usr/bin:/usr/sbin/:/bin:/sbin" }
-  ensure_packages ( $depend_pkgs,
+  stdlib::ensure_packages ( $depend_pkgs,
     {
       ensure  => 'installed',
     }
